@@ -13,53 +13,13 @@ class TransactionListScreen extends ConsumerWidget {
   const TransactionListScreen({super.key});
 
   Future<void> _showAddSmsDialog(BuildContext context, WidgetRef ref) async {
-    final controller = TextEditingController();
-    String? errorText;
+    final rawMessage = await showDialog<String>(
+      context: context,
+      builder: (_) => const _AddSmsDialog(),
+    );
+    if (rawMessage == null) return;
 
-    try {
-      await showDialog<void>(
-        context: context,
-        builder: (dialogContext) {
-          return StatefulBuilder(
-            builder: (dialogContext, setState) {
-              return AlertDialog(
-                title: const Text('Paste SMS / OTP message'),
-                content: TextField(
-                  controller: controller,
-                  maxLines: 6,
-                  decoration: InputDecoration(
-                    hintText: 'Paste a bank transaction SMS here...',
-                    errorText: errorText,
-                    border: const OutlineInputBorder(),
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.of(dialogContext).pop(),
-                    child: const Text('Cancel'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      try {
-                        ref
-                            .read(transactionsProvider.notifier)
-                            .addFromRawSms(controller.text);
-                        Navigator.of(dialogContext).pop();
-                      } on SmsParseException catch (e) {
-                        setState(() => errorText = e.message);
-                      }
-                    },
-                    child: const Text('Parse & Add'),
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      );
-    } finally {
-      controller.dispose();
-    }
+    ref.read(transactionsProvider.notifier).addFromRawSms(rawMessage);
   }
 
   @override
@@ -94,6 +54,66 @@ class TransactionListScreen extends ConsumerWidget {
         icon: const Icon(Icons.sms),
         label: const Text('Add SMS'),
       ),
+    );
+  }
+}
+
+class _AddSmsDialog extends StatefulWidget {
+  const _AddSmsDialog();
+
+  @override
+  State<_AddSmsDialog> createState() => _AddSmsDialogState();
+}
+
+class _AddSmsDialogState extends State<_AddSmsDialog> {
+  late final TextEditingController _controller;
+  String? _errorText;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    try {
+      SmsParser.parse(_controller.text);
+    } on SmsParseException catch (e) {
+      setState(() => _errorText = e.message);
+      return;
+    }
+    Navigator.of(context).pop(_controller.text);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Paste SMS / OTP message'),
+      content: TextField(
+        controller: _controller,
+        maxLines: 6,
+        decoration: InputDecoration(
+          hintText: 'Paste a bank transaction SMS here...',
+          errorText: _errorText,
+          border: const OutlineInputBorder(),
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: const Text('Cancel'),
+        ),
+        FilledButton(
+          onPressed: _submit,
+          child: const Text('Parse & Add'),
+        ),
+      ],
     );
   }
 }

@@ -24,6 +24,24 @@ Get protected - Do not Share OTP''';
       expect(tx.dateTime.minute, 46);
     });
 
+    test('parses the user SMS format where date follows on the same line', () {
+      const raw =
+          'LKR 1,692.00 debited from AC **1114 via POS at KEELLS SUPER - KOTTAWA 10402483 25/03/2026 17:46:49 To Ing Call 0112303050 Get protected - Do not Share OTP';
+
+      final tx = SmsParser.parse(raw);
+
+      expect(tx.amount, 1692.00);
+      expect(tx.type, TransactionType.expense);
+      expect(tx.accountRef, '**1114');
+      expect(tx.merchant, 'KEELLS SUPER - KOTTAWA');
+      expect(tx.category, 'Groceries');
+      expect(tx.dateTime.year, 2026);
+      expect(tx.dateTime.month, 3);
+      expect(tx.dateTime.day, 25);
+      expect(tx.dateTime.hour, 17);
+      expect(tx.dateTime.minute, 46);
+    });
+
     test('parses a credit (income) message correctly', () {
       const raw = '''LKR 45,000.00 credited to AC **1114 via POS at SALARY TRANSFER 10999812
 30/03/2026 09:02:01

@@ -34,10 +34,14 @@ class SmsParser {
   // AC **1114
   static final _accountRegex = RegExp(r'AC\s*(\*+\d+)');
 
-  // "via POS at KEELLS SUPER - KOTTAWA 10402483"
-  // group 1 = merchant name, group 2 = trailing reference number
-  static final _merchantRegex = RegExp(r'via POS at (.+?)\s+(\d+)\s*$',
-      multiLine: true);
+  // "via POS at KEELLS SUPER - KOTTAWA 10402483 25/03/2026 ..."
+  // The POS reference can be followed by the date/time on the same line,
+  // or by other SMS text afterward, so it must not be treated as the end
+  // of the message.
+  static final _merchantRegex = RegExp(
+    r'via POS at\s+(.+?)\s+\d+\s*(?=(?:\d{2}/\d{2}/\d{4}|\bTo\b|$))',
+    multiLine: true,
+  );
 
   // 25/03/2026 17:46:49
   static final _dateTimeRegex =

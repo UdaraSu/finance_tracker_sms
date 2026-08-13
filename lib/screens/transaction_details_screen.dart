@@ -71,6 +71,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           const Text('Category', style: TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 4),
           DropdownButtonFormField<String>(
+            key: ValueKey('${transaction.id}-${transaction.category}'),
             initialValue: transaction.category,
             items: Category.all
                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))
