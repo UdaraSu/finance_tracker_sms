@@ -9,11 +9,11 @@ class Categorizer {
   /// Ordered list of (keywords, category). First match wins, so put
   /// more specific rules before broader ones.
   static final List<_Rule> _rules = [
-    _Rule(
+    const _Rule(
       keywords: ['interchange', 'transport', 'expressway', 'toll'],
       category: Category.transport,
     ),
-    _Rule(
+    const _Rule(
       keywords: [
         'super',
         'supermarket',
@@ -24,7 +24,7 @@ class Categorizer {
       ],
       category: Category.groceries,
     ),
-    _Rule(
+    const _Rule(
       keywords: ['fuel', 'petrol', 'filling station', 'ioc', 'ceypetco'],
       category: Category.fuel,
     ),

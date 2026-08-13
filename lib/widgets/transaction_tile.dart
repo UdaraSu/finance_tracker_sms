@@ -27,7 +27,7 @@ class TransactionTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: CircleAvatar(
-        backgroundColor: amountColor.withOpacity(0.15),
+        backgroundColor: amountColor.withValues(alpha: 0.15),
         child: Icon(
           isExpense ? Icons.arrow_upward : Icons.arrow_downward,
           color: amountColor,

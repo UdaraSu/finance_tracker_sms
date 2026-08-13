@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import '../models/category.dart';
 import '../models/transaction.dart';
 import 'categorizer.dart';
 
@@ -81,7 +82,7 @@ class SmsParser {
     }
 
     final category = type == TransactionType.income
-        ? 'Income'
+        ? Category.income
         : Categorizer.categorize(merchant);
 
     return Transaction(

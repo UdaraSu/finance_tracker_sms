@@ -18,7 +18,15 @@ class TransactionDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionsProvider);
-    final transaction = transactions.firstWhere((t) => t.id == transactionId);
+    final transactionIndex =
+        transactions.indexWhere((t) => t.id == transactionId);
+    if (transactionIndex == -1) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Transaction Details')),
+        body: const Center(child: Text('Transaction not found.')),
+      );
+    }
+    final transaction = transactions[transactionIndex];
 
     final isExpense = transaction.type == TransactionType.expense;
     final currencyFormat =

@@ -16,46 +16,50 @@ class TransactionListScreen extends ConsumerWidget {
     final controller = TextEditingController();
     String? errorText;
 
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (dialogContext, setState) {
-            return AlertDialog(
-              title: const Text('Paste SMS / OTP message'),
-              content: TextField(
-                controller: controller,
-                maxLines: 6,
-                decoration: InputDecoration(
-                  hintText: 'Paste a bank transaction SMS here...',
-                  errorText: errorText,
-                  border: const OutlineInputBorder(),
+    try {
+      await showDialog<void>(
+        context: context,
+        builder: (dialogContext) {
+          return StatefulBuilder(
+            builder: (dialogContext, setState) {
+              return AlertDialog(
+                title: const Text('Paste SMS / OTP message'),
+                content: TextField(
+                  controller: controller,
+                  maxLines: 6,
+                  decoration: InputDecoration(
+                    hintText: 'Paste a bank transaction SMS here...',
+                    errorText: errorText,
+                    border: const OutlineInputBorder(),
+                  ),
                 ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Cancel'),
-                ),
-                FilledButton(
-                  onPressed: () {
-                    try {
-                      ref
-                          .read(transactionsProvider.notifier)
-                          .addFromRawSms(controller.text);
-                      Navigator.of(dialogContext).pop();
-                    } on SmsParseException catch (e) {
-                      setState(() => errorText = e.message);
-                    }
-                  },
-                  child: const Text('Parse & Add'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(dialogContext).pop(),
+                    child: const Text('Cancel'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      try {
+                        ref
+                            .read(transactionsProvider.notifier)
+                            .addFromRawSms(controller.text);
+                        Navigator.of(dialogContext).pop();
+                      } on SmsParseException catch (e) {
+                        setState(() => errorText = e.message);
+                      }
+                    },
+                    child: const Text('Parse & Add'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+    } finally {
+      controller.dispose();
+    }
   }
 
   @override
