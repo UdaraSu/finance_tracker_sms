@@ -6,10 +6,6 @@ import '../models/category.dart';
 import '../models/transaction.dart';
 import '../providers/transaction_provider.dart';
 
-/// Screen 2: Full parsed detail for one transaction, plus the
-/// category-edit control. Because it watches [transactionsProvider]
-/// (not a snapshot passed via constructor), any category change made
-/// here is instantly visible back on the list screen too.
 class TransactionDetailsScreen extends ConsumerWidget {
   final String transactionId;
 
@@ -18,7 +14,15 @@ class TransactionDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final transactions = ref.watch(transactionsProvider);
-    final transaction = transactions.firstWhere((t) => t.id == transactionId);
+    final transactionIndex =
+        transactions.indexWhere((t) => t.id == transactionId);
+    if (transactionIndex == -1) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Transaction Details')),
+        body: const Center(child: Text('Transaction not found.')),
+      );
+    }
+    final transaction = transactions[transactionIndex];
 
     final isExpense = transaction.type == TransactionType.expense;
     final currencyFormat =
@@ -63,6 +67,8 @@ class TransactionDetailsScreen extends ConsumerWidget {
           const Text('Category', style: TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 4),
           DropdownButtonFormField<String>(
+            // key forces rebuild when category changes
+            key: ValueKey('${transaction.id}-${transaction.category}'),
             initialValue: transaction.category,
             items: Category.all
                 .map((c) => DropdownMenuItem(value: c, child: Text(c)))

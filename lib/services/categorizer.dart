@@ -1,19 +1,13 @@
 import '../models/category.dart';
 
-/// Pure keyword-matching categorizer.
-///
-/// Kept as its own class (rather than baked into the parser) so the
-/// rule set can be extended or swapped out — e.g. for a smarter
-/// classifier later — without touching the SMS-parsing logic.
 class Categorizer {
-  /// Ordered list of (keywords, category). First match wins, so put
-  /// more specific rules before broader ones.
+  // first matching keyword wins
   static final List<_Rule> _rules = [
-    _Rule(
+    const _Rule(
       keywords: ['interchange', 'transport', 'expressway', 'toll'],
       category: Category.transport,
     ),
-    _Rule(
+    const _Rule(
       keywords: [
         'super',
         'supermarket',
@@ -24,14 +18,13 @@ class Categorizer {
       ],
       category: Category.groceries,
     ),
-    _Rule(
+    const _Rule(
       keywords: ['fuel', 'petrol', 'filling station', 'ioc', 'ceypetco'],
       category: Category.fuel,
     ),
   ];
 
-  /// Returns the best-guess category for a merchant string. Falls
-  /// back to [Category.other] when nothing matches.
+//back to category = other if no match
   static String categorize(String merchant) {
     final normalized = merchant.toLowerCase();
     for (final rule in _rules) {

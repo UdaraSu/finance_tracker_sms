@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../models/transaction.dart';
 
-/// Purely presentational — takes a [Transaction] and a tap callback,
-/// no business logic, no provider access. This keeps it trivially
-/// reusable and testable in isolation.
 class TransactionTile extends StatelessWidget {
   final Transaction transaction;
   final VoidCallback onTap;
@@ -27,7 +23,7 @@ class TransactionTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: CircleAvatar(
-        backgroundColor: amountColor.withOpacity(0.15),
+        backgroundColor: amountColor.withValues(alpha: 0.15),
         child: Icon(
           isExpense ? Icons.arrow_upward : Icons.arrow_downward,
           color: amountColor,

@@ -1,12 +1,10 @@
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
+import '../models/category.dart';
 import '../models/transaction.dart';
 import 'categorizer.dart';
 
-/// Thrown when a raw SMS string doesn't match the expected bank
-/// transaction format, so the UI layer can show a friendly error
-/// instead of crashing.
 class SmsParseException implements Exception {
   final String message;
   SmsParseException(this.message);
@@ -38,14 +36,11 @@ class SmsParser {
   static final _merchantRegex = RegExp(r'via POS at (.+?)\s+(\d+)\s*$',
       multiLine: true);
 
-  // 25/03/2026 17:46:49
   static final _dateTimeRegex =
       RegExp(r'(\d{2}/\d{2}/\d{4})\s+(\d{2}:\d{2}:\d{2})');
 
   static final DateFormat _dateFormat = DateFormat('dd/MM/yyyy HH:mm:ss');
 
-  /// Parses a single raw SMS body into a [Transaction].
-  /// Throws [SmsParseException] if required fields can't be found.
   static Transaction parse(String rawMessage) {
     final amountMatch = _amountRegex.firstMatch(rawMessage);
     if (amountMatch == null) {
@@ -81,7 +76,7 @@ class SmsParser {
     }
 
     final category = type == TransactionType.income
-        ? 'Income'
+        ? Category.income
         : Categorizer.categorize(merchant);
 
     return Transaction(
@@ -96,16 +91,13 @@ class SmsParser {
     );
   }
 
-  /// Convenience helper for parsing several messages at once (e.g.
-  /// the bundled sample data), skipping any that fail to parse.
   static List<Transaction> parseAll(List<String> rawMessages) {
     final results = <Transaction>[];
     for (final msg in rawMessages) {
       try {
         results.add(parse(msg));
       } catch (_) {
-        // Skip malformed messages rather than crashing the whole batch.
-        continue;
+        continue; // ignore bad messages in batch
       }
     }
     return results;

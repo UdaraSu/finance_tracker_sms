@@ -1,7 +1,4 @@
-/// Central list of categories the app knows about. Keeping this as a
-/// single source of truth means the auto-categorizer, the manual
-/// category-edit dropdown, and any future analytics screen all agree
-/// on the same set of values.
+// categories for transactions
 class Category {
   static const String transport = 'Transport';
   static const String groceries = 'Groceries';
