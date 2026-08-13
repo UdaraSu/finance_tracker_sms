@@ -6,10 +6,6 @@ import '../models/category.dart';
 import '../models/transaction.dart';
 import '../providers/transaction_provider.dart';
 
-/// Screen 2: Full parsed detail for one transaction, plus the
-/// category-edit control. Because it watches [transactionsProvider]
-/// (not a snapshot passed via constructor), any category change made
-/// here is instantly visible back on the list screen too.
 class TransactionDetailsScreen extends ConsumerWidget {
   final String transactionId;
 
@@ -71,6 +67,7 @@ class TransactionDetailsScreen extends ConsumerWidget {
           const Text('Category', style: TextStyle(fontWeight: FontWeight.w600)),
           const SizedBox(height: 4),
           DropdownButtonFormField<String>(
+            // key forces rebuild when category changes
             key: ValueKey('${transaction.id}-${transaction.category}'),
             initialValue: transaction.category,
             items: Category.all

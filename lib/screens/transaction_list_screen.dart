@@ -6,9 +6,6 @@ import '../services/sms_parser.dart';
 import '../widgets/transaction_tile.dart';
 import 'transaction_details_screen.dart';
 
-/// Screen 1: Transaction list. Reads state via [transactionsProvider]
-/// only — all parsing/categorization already happened before the
-/// data reached this widget.
 class TransactionListScreen extends ConsumerWidget {
   const TransactionListScreen({super.key});
 
@@ -88,6 +85,7 @@ class _AddSmsDialogState extends State<_AddSmsDialog> {
       setState(() => _errorText = e.message);
       return;
     }
+    // return text first, update list after dialog closes
     Navigator.of(context).pop(_controller.text);
   }
 

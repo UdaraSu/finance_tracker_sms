@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../models/transaction.dart';
 
-/// Purely presentational — takes a [Transaction] and a tap callback,
-/// no business logic, no provider access. This keeps it trivially
-/// reusable and testable in isolation.
 class TransactionTile extends StatelessWidget {
   final Transaction transaction;
   final VoidCallback onTap;

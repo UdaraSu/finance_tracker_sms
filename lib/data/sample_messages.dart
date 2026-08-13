@@ -1,6 +1,4 @@
-/// Sample bank SMS messages taken directly from the assessment brief.
-/// Kept separate from the parser/provider so it's obvious this is
-/// swappable demo data, not part of the app's real logic.
+// demo SMS messages for initial launch
 const List<String> sampleSmsMessages = [
   '''LKR 150.00 debited from AC **1111 via POS at KOTTAWA INTERCHANGE 10500302
 28/03/2026 14:19:13
